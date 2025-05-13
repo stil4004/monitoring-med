@@ -1,0 +1,17 @@
+global:
+  scrape_interval: 15s  # Частота сбора метрик
+
+scrape_configs:
+  - job_name: "prometheus"  # Произвольное имя задачи
+    static_configs:
+      - targets: ["prometheus:9090"]  # Адрес Node Exporter
+  - job_name: "node_exporter"  # Произвольное имя задачи
+    static_configs:
+      - targets: ["node_exporter:9100"]  # Адрес Node Exporter
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: nodename
+        replacement: 'my-node'  # Замените на реальное имя сервер
+
+remote_write:
+  - url: "http://victoriametrics:8428/api/v1/write"

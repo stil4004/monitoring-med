@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:v1.3.1
+    container_name: node_exporter
+    ports:
+      - "9100:9100"   
+    pid: host  # Доступ к информации о процессах
+    restart: unless-stopped
+    volumes:
+      - /:/host/rootfs:ro
+      - /proc:/host/proc:ro  # Метрики процессов
+      - /sys:/host/sys:ro  # Железо и устройства
+      - /run/udev:/run/udev:ro  # Информация об устройствах
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/host/rootfs'
+      - '--collector.disable-defaults'
+      - '--collector.cpu'
+      - '--collector.meminfo'
+      - '--collector.diskstats'
+      - '--collector.netdev'
+      - '--collector.filesystem'
+      - '--collector.uname'
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090" 
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: unless-stopped
+    depends_on:
+      - node_exporter  
+  grafana: 
+    image: grafana/grafana:8.5.3-ubuntu
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - prometheus
+      
+  victoriametrics:
+    image: victoriametrics/victoria-metrics:stable
+    ports:
+      - "8428:8428"  # HTTP API
+      - "8089:8089"  # Graphite
+    volumes:
+      - victoria-data:/var/lib/victoria-metrics-data
+    command:
+      - "--retentionPeriod=12"  # Хранение 12 месяцев
+      
+volumes:
+  grafana-storage:
+  victoria-data:
+
+            
