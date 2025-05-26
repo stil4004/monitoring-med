@@ -3,6 +3,7 @@ package stats_repo
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 
@@ -16,6 +17,7 @@ type Repository interface {
 	GetLastNStats(ctx context.Context, metricName string, n int) ([]model.Stat, error)
 	GetStatsInRange(ctx context.Context, metricName string, start, end time.Time) ([]model.Stat, error)
 	CheckMetricExists(ctx context.Context, metricName string) (bool, error)
+	WriteStat(ctx context.Context, stat model.Stat) error
 }
 
 type victoriaMetricsRepo struct {
@@ -26,18 +28,28 @@ func New(client victoriametrics.Client) Repository {
 	return &victoriaMetricsRepo{client: client}
 }
 
+func (r *victoriaMetricsRepo) WriteStat(ctx context.Context, stat model.Stat) error {
+	metric := fmt.Sprintf("%s %s %d", stat.Name, stat.Value.String(), stat.Time.Unix())
+	return r.client.WriteMetrics(ctx, metric)
+}
+
 func (r *victoriaMetricsRepo) GetLastNStats(
 	ctx context.Context,
 	metricName string,
 	n int,
 ) ([]model.Stat, error) {
-	query := fmt.Sprintf("topk(%d, %s)", n, metricName)
-	results, err := r.client.InstantQuery(ctx, query, time.Now())
+	// Используем range запрос за последний час, чтобы гарантированно получить данные
+	query := fmt.Sprintf("sort_desc(%s[1h])", metricName)
+	results, err := r.client.RangeQuery(ctx, query, time.Now().Add(-1*time.Hour), time.Now(), time.Minute)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get last %d stats: %w", n, err)
 	}
 
-	return convertResults(metricName, results), nil
+	stats := convertResults(metricName, results)
+	if len(stats) > n {
+		stats = stats[:n]
+	}
+	return stats, nil
 }
 
 func (r *victoriaMetricsRepo) GetStatsInRange(
@@ -55,10 +67,9 @@ func (r *victoriaMetricsRepo) GetStatsInRange(
 }
 
 func (r *victoriaMetricsRepo) CheckMetricExists(ctx context.Context, metricName string) (bool, error) {
-	// Используем простой запрос last_over_time для проверки существования метрики
-	query := fmt.Sprintf("last_over_time(%s[1m])", metricName)
-	_, err := r.client.InstantQuery(ctx, query, time.Now())
-
+	// Используем запрос, который возвращает пустой результат если метрика не существует
+	query := fmt.Sprintf("count(%s)", metricName)
+	results, err := r.client.InstantQuery(ctx, query, time.Now())
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") ||
 			strings.Contains(err.Error(), "no such metric") {
@@ -67,7 +78,25 @@ func (r *victoriaMetricsRepo) CheckMetricExists(ctx context.Context, metricName 
 		return false, fmt.Errorf("failed to check metric existence: %w", err)
 	}
 
-	return true, nil
+	// Проверяем, есть ли хоть один результат с ненулевым значением
+	for _, res := range results {
+		if len(res.Value) >= 2 {
+			valueStr, ok := res.Value[1].(string)
+			if ok && valueStr != "0" {
+				return true, nil
+			}
+		}
+		for _, values := range res.Values {
+			if len(values) >= 2 {
+				valueStr, ok := values[1].(string)
+				if ok && valueStr != "0" {
+					return true, nil
+				}
+			}
+		}
+	}
+
+	return false, nil
 }
 
 func calculateStep(start, end time.Time) time.Duration {
@@ -101,9 +130,13 @@ func convertResults(metricName string, results []victoriametrics.QueryResult) []
 		}
 	}
 
+	// Сортируем по времени (новые сначала)
+	sort.Slice(stats, func(i, j int) bool {
+		return stats[i].Time.After(stats[j].Time)
+	})
+
 	return stats
 }
-
 func convertDataPoint(metricName string, point []interface{}) *model.Stat {
 	timestamp, ok := point[0].(float64)
 	if !ok {

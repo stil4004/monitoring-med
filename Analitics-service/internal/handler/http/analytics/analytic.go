@@ -101,6 +101,33 @@ func (h *AnalyticHandler) GetLastNStats(ctx context.Context) fiber.Handler {
 	}
 }
 
+func (h *AnalyticHandler) WriteStat(ctx context.Context) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		var req model.WriteStatRequest
+		if err := c.BodyParser(&req); err != nil {
+			return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+				"error": "invalid request body",
+			})
+		}
+
+		if req.Name == "" || req.Value.IsZero() {
+			return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+				"error": "name and value are required",
+			})
+		}
+
+		if err := h.analyticUC.WriteStat(ctx, req.ToStat()); err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+				"error": "failed to write metric",
+			})
+		}
+
+		return c.Status(http.StatusOK).JSON(fiber.Map{
+			"status": "success",
+		})
+	}
+}
+
 func (h *AnalyticHandler) GetStatsInRange(ctx context.Context) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var (

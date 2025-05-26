@@ -12,6 +12,7 @@ func MapAnalyticRoutes(ctx context.Context, router *fiber.App, h *AnalyticHandle
 	// Stats routes
 	analyticGR.Get("/stats/last", h.GetLastNStats(ctx))
 	analyticGR.Get("/stats/range", h.GetStatsInRange(ctx))
+	router.Post("/stats", h.WriteStat(ctx))
 
 	return true, nil
 }

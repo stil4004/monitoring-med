@@ -10,6 +10,7 @@ import (
 type AnalyticUsecase interface {
 	GetLastNStats(ctx context.Context, metricName string, n int) ([]model.Stat, error)
 	GetStatsInRange(ctx context.Context, metricName string, start, end time.Time) ([]model.Stat, error)
+	WriteStat(ctx context.Context, stat model.Stat) error
 }
 
 type analyticUsecase struct {
@@ -18,6 +19,10 @@ type analyticUsecase struct {
 
 func NewAnalyticUsecase(repo stats_repo.Repository) AnalyticUsecase {
 	return &analyticUsecase{repo: repo}
+}
+
+func (u *analyticUsecase) WriteStat(ctx context.Context, stat model.Stat) error {
+	return u.repo.WriteStat(ctx, stat)
 }
 
 func (a *analyticUsecase) GetLastNStats(ctx context.Context, metricName string, n int) ([]model.Stat, error) {
