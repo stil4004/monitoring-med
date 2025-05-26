@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+//protoc -I proto proto/market/*.proto --go_out=./gen/go/ --go_opt=paths=source_relative --go-grpc_out=./gen/go/ --go-grpc_opt=paths=source_relative
+
+package market;
+
+option go_package = "./market";
+
+
+service payment {
+  rpc CreateNewRequisite(CreateRequisiteRequest) returns (google.protobuf.Empty);
+  rpc DeleteRequisite(DeleteRequisiteRequest) returns (google.protobuf.Empty);
+  rpc GetRequisites(GetRequisitesRequest) returns (GetRequisitesResponse);
+  rpc GetOfferPayments(OfferPaymentsRequest) returns (OfferPaymentsResponse);
+}
+
+message CreateRequisiteRequest {
+    google.protobuf.Timestamp create_time = 1;
+    string first_name = 2;
+    bool is_active = 3;
+    int64 token_id = 4;
+    string surname = 5;
+    bool is_hide = 6;
+    string bank = 7;
+    string tech = 8;
+    string card = 9;
+    string access = 10;
+}
+
+message DeleteRequisiteRequest {
+  int64 paymentId = 1;
+  string access = 2;
+}
+
+message GetRequisitesRequest {
+  string fiat_name = 1;
+  string access = 2;
+}
+
+message GetRequisitesResponse {
+  repeated RequisitePayment data = 1;
+}
+
+message RequisitePayment {
+  string first_name = 1;
+//  int64 token_id = 2; // <>
+  string surname = 2;
+  bool is_hide = 3;
+  google.protobuf.Timestamp create_time = 4;
+  bool is_active = 5;
+//  int64 user_id = 7; // <>
+  string card = 6;
+//  string id = 9; // <>
+  int64 num_id = 7;
+//  string tech = 11; // <>
+  string full = 8;
+  string bank = 9;
+}
+
+message OfferPaymentsRequest {
+  string internal_offer_id = 1;
+  string access = 2;
+}
+
+message OfferPaymentsResponse {
+  repeated RequisitePayment data = 1;
+}
+

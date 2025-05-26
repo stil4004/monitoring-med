@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  qa_service:
+    ports:
+      - "12056:12056"
+    network_mode: host
+    environment:
+      - AE_KEY
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+#    c - "19000:9000"

@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package api_m;
+
+option go_package = "./api_m";
+
+service token {
+  rpc GetTokens(GetTokensRequest) returns (GetTokensResponse);
+  rpc CheckLimits(CheckLimitsRequest) returns (CheckLimitsResponse); // response уточнить
+  rpc GetPrice(GetPriceRequest) returns (GetPriceResponse);
+}
+
+message GetPriceRequest {
+  double percent = 1; // ?
+  bool fixed = 2;
+  string right = 3; // sberrub
+  string left = 4; // usdt
+  string type = 5; // crypto, fiat ?
+}
+
+message GetPriceResponse {
+  double limitMin = 1;
+  double limitMax = 2;
+  double price = 3;
+}
+
+// как работает?
+message CheckLimitsRequest {
+  double amount = 1;
+  bool fixed = 2; // true - фиксированная сумма, false - динамическая ?
+  string right = 3; // token tech?
+  string left = 4;
+}
+
+message CheckLimitsResponse {
+  bool response = 1;
+}
+
+message GetTokensRequest {
+  bool isCrypto = 1;
+  bool isFiat = 2;
+  bool all = 3;
+}
+
+message GetTokensResponse {
+  repeated Token tokens = 1;
+}
+
+message Token {
+  string tech = 1;
+//  string market = 2; // <>
+//  string full = 3; // <>
+  bool isCrypto = 2;
+  bool isActive = 3;
+}

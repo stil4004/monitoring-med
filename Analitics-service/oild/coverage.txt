@@ -1,0 +1,26 @@
+mode: set
+service/service/service.go:24.48,29.2 1 1
+service/service/service.go:32.58,33.16 1 1
+service/service/service.go:33.16,35.3 1 1
+service/service/service.go:37.2,40.21 3 1
+service/service/service.go:40.21,42.3 1 1
+service/service/service.go:44.2,45.12 2 1
+service/service/service.go:49.61,53.22 3 1
+service/service/service.go:53.22,55.3 1 1
+service/service/service.go:57.2,59.12 3 1
+service/service/service.go:63.100,67.24 3 1
+service/service/service.go:67.24,69.3 1 1
+service/service/service.go:71.2,75.12 2 1
+service/service/service.go:79.84,83.33 3 1
+service/service/service.go:83.33,85.3 1 1
+service/service/service.go:87.2,88.13 2 1
+service/service/service.go:88.13,90.3 1 0
+service/service/service.go:92.2,92.42 1 1
+service/service/service.go:92.42,93.58 1 1
+service/service/service.go:93.58,95.4 1 1
+service/service/service.go:96.3,96.58 1 1
+service/service/service.go:96.58,98.4 1 0
+service/service/service.go:101.2,101.19 1 1
+service/service/service.go:105.57,110.32 4 1
+service/service/service.go:110.32,112.3 1 1
+service/service/service.go:113.2,113.16 1 1

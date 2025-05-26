@@ -1,0 +1,266 @@
+syntax = "proto3";
+
+package user_service;
+
+import "google/protobuf/timestamp.proto";
+option go_package = "./user_service";
+
+//  protoc -I protos/proto protos/proto/user/*.proto --go_out=./protos/proto/gen/go/ --go_opt=paths=source_relative --go-grpc_out=./protos/proto/gen/go/ --go-grpc_opt=paths=source_relative
+
+service UserService {
+  rpc AddNotice(AddNoticeRequest) returns (AddNoticeResponse); // +
+  rpc VerifyTOTPByUserID(VerifyTOTPByUserIDRequest) returns (VerifyTOTPByUserIDResponse); // +
+  rpc GetUserNicknameByID(GetUserNicknameByIDRequest) returns (GetUserNicknameByIDResponse); // +
+  rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse); // +
+  rpc GetUserIDByAccessToken(GetUserIDByAccessTokenRequest) returns (GetUserIDByAccessTokenResponse); // +
+  rpc GetUserByAccessToken(GetUserByAccessTokenRequest) returns (GetUserByAccessTokenResponse); // +
+  rpc GetUserByNicknameWithID(GetUserByNicknameWithIDRequest) returns (GetUserByNicknameWithIDResponse); // +
+  rpc GetUserByNicknameFull(GetUserByNicknameFullRequest) returns (GetUserByNicknameFullResponse); // +
+  rpc GetKycConfirmByID(GetKycConfirmByIDRequest) returns (GetKycConfirmByIDResponse); // +
+  rpc GetShortUserByAccess(GetShortUserByAccessRequest) returns (GetShortUserByAccessResponse); // +
+  rpc GetShortUserByNickname(GetShortUserByNicknameRequest) returns (GetShortUserByNicknameResponse); // +
+  rpc GetShortUserByID(GetShortUserByIDRequest) returns (GetShortUserByIDResponse); // +
+  rpc GetUserByNicknameWithTGAndReferral(GetUserByNicknameWithTGAndReferralRequest) returns (GetUserByNicknameWithTGAndReferralResponse); // +
+  rpc GetUserByNickname(GetUserByNicknameRequest) returns (GetUserByNicknameResponse); // +
+}
+
+message AddNoticeRequest {
+  string internal_id = 1;
+  string type = 2;
+  bool is_read = 3;
+  google.protobuf.Timestamp create_time = 4;
+  double amount_to = 5;
+  string amount_to_token = 6;
+  double amount_from = 7;
+  string amount_from_token = 8;
+  int64 client_id = 9;
+//  string nickname = 9;
+}
+
+message AddNoticeResponse {
+  bool success = 1;
+}
+
+message VerifyTOTPByUserIDRequest {
+  uint64 user_id = 1;
+  string totp_code = 2;
+}
+
+message VerifyTOTPByUserIDResponse {
+  bool success = 1;
+}
+
+message GetUserNicknameByIDRequest {
+  uint64 user_id = 1;
+}
+
+message GetUserNicknameByIDResponse {
+  string nickname = 1;
+}
+
+message GetUserByIDRequest {
+  uint64 user_id = 1;
+}
+
+message GetUserByIDResponse {
+  string uuid = 1;
+  int64 client_id = 2;
+  string nickname = 3;
+  string email = 4;
+  string avatar = 5;
+  string bio = 6;
+  bool is_blocked = 7;
+  string blocked_until = 8;
+  string last_entry = 9;
+  string last_activity = 10;
+  string registration_date = 11;
+  string language = 12;
+  bool is_dnd = 13;
+  string ip = 14;
+  bool kyc = 15;
+  bool merchant = 16;
+  uint32 origin_id = 17;
+}
+
+message GetUserIDByAccessTokenRequest {
+  string access = 1;
+}
+
+message GetUserIDByAccessTokenResponse {
+  uint64 user_id = 1;
+}
+
+message GetUserByAccessTokenRequest {
+  string access = 1;
+}
+
+message GetUserByAccessTokenResponse {
+  int64 client_id = 1;
+  string nickname = 2;
+  string avatar = 3;
+  string bio = 4;
+  string email = 5;
+  string registration_date = 6;
+  string last_visit = 7;
+  string blocked_until = 8;
+  bool is_blocked = 9;
+  string language = 10;
+  bool merchant = 11;
+  Verification verification = 12;
+}
+
+message Verification {
+  bool phone_confirm = 1;
+  bool email_confirm = 2;
+  bool kyc_confirm = 3;
+  bool totp_confirm = 4;
+}
+
+message GetUserByNicknameWithIDRequest {
+  string nickname = 1;
+}
+
+message GetUserByNicknameWithIDResponse {
+  string uuid = 1;
+  int64 client_id = 2;
+  string nickname = 3;
+  string email = 4;
+  string avatar = 5;
+  string bio = 6;
+  bool is_blocked = 7;
+  string blocked_until = 8;
+  string last_entry = 9;
+  string last_activity = 10;
+  string registration_date = 11;
+  string language = 12;
+  bool is_dnd = 13;
+  string ip = 14;
+  bool kyc = 15;
+  bool merchant = 16;
+  uint32 origin_id = 17;
+}
+
+message GetKycConfirmByIDRequest {
+  int64 user_id = 1;
+}
+
+message GetKycConfirmByIDResponse {
+  bool success = 1;
+}
+
+message GetShortUserByAccessRequest {
+  string access = 1;
+}
+
+message GetShortUserByAccessResponse {
+  int64 client_id = 1;
+  string email = 2;
+  string nickname = 3;
+  bool is_dnd = 4;
+  string avatar = 5;
+  string last_entry = 6;
+  bool is_blocked = 7;
+  string language = 8;
+  bool merchant = 9;
+  uint32 tg_chat_id = 10;
+}
+
+message GetShortUserByNicknameRequest {
+  string nickname = 1;
+}
+
+message GetShortUserByNicknameResponse {
+  int64 client_id = 1;
+  string email = 2;
+  string nickname = 3;
+  bool is_dnd = 4;
+  string avatar = 5;
+  string last_entry = 6;
+  bool is_blocked = 7;
+  string language = 8;
+  bool merchant = 9;
+  uint32 tg_chat_id = 10;
+}
+
+message GetUserByNicknameWithTGAndReferralRequest {
+  string nickname = 1;
+}
+
+message GetUserByNicknameWithTGAndReferralResponse {
+  string nickname = 1;
+  string avatar = 2;
+  string bio = 3;
+  string email = 4;
+  string tg = 5;
+  string registration_date = 6;
+  string last_visit = 7;
+  string last_activity = 8;
+  string blocked_until = 9;
+  bool is_blocked = 10;
+  string language = 11;
+  string ip = 12;
+  bool merchant = 13;
+  string referral_id = 14;
+  Verification verification = 15;
+}
+
+message GetUserByNicknameRequest {
+  string nickname = 1;
+}
+
+message GetUserByNicknameResponse {
+  string nickname = 1;
+  string avatar = 2;
+  string bio = 3;
+  string email = 4;
+  string registration_date = 5;
+  string last_visit = 6;
+  string last_activity = 7;
+  string blocked_until = 8;
+  bool is_blocked = 9;
+  string language = 10;
+  string ip = 11;
+  bool merchant = 12;
+  Verification verification = 13;
+}
+
+message GetShortUserByIDRequest {
+  uint64 user_id = 1;
+}
+
+message GetShortUserByIDResponse {
+  int64 client_id = 1;
+  string email = 2;
+  string nickname = 3;
+  bool is_dnd = 4;
+  string avatar = 5;
+  string last_entry = 6;
+  bool is_blocked = 7;
+  string language = 8;
+  bool merchant = 9;
+  uint32 tg_chat_id = 10;
+}
+
+message GetUserByNicknameFullRequest {
+  string nickname = 1;
+}
+
+message GetUserByNicknameFullResponse {
+  string uuid = 1;
+  int64 client_id = 2;
+  string nickname = 3;
+  string email = 4;
+  string avatar = 5;
+  string bio = 6;
+  bool is_blocked = 7;
+  string blocked_until = 8;
+  string last_entry = 9;
+  string last_activity = 10;
+  string registration_date = 11;
+  string language = 12;
+  bool is_dnd = 13;
+  string ip = 14;
+  bool kyc = 15;
+  bool merchant = 16;
+  uint32 origin_id = 17;
+}

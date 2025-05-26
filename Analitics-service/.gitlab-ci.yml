@@ -1,0 +1,21 @@
+image: docker/compose:latest
+
+stages:
+  - deploy
+
+prod:
+  tags:
+    - build-prod
+  stage: deploy
+  rules:
+    - if: '$CI_COMMIT_MESSAGE =~ /ci prod/'
+  script:
+    - |
+      if [ "$CI_COMMIT_REF_NAME" == "the_mainest" ] ; then
+        docker-compose -f docker-compose.yml up -d --no-deps --build 
+        docker image prune -f
+      else
+        echo "Not deploying as the branch is not main or commit message doesn't match."
+      fi
+  when: manual
+

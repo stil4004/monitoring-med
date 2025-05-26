@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+
+package api_m;
+
+option go_package = "./api_m";
+
+service operation {
+  rpc WithdrawCrypto(WithdrawCryptoRequest) returns (WithdrawCryptoResponse);
+  rpc GetUserBalance(GetUserBalanceRequest) returns (GetUserBalanceResponse);
+}
+
+// TODO access then userId
+message WithdrawCryptoRequest {
+  string destTag = 1; // Monero XRP, destTag from client side
+//  string callbackId = 2; // delete nahui
+  string internalId = 2;
+  string totpToken = 3;
+  string receiver = 4;
+  double amount = 5;
+  string token = 6;
+  string code = 7; // seed phrase or email code
+//  int64 userId = 9; // delete nahui
+//  string access = 10;
+}
+
+message WithdrawCryptoResponse {
+  string trackerId = 1;
+}
+
+message GetUserBalanceRequest {
+  bool onCreate = 1; // for front balance - comission when creating offer
+  string token = 2;
+//  string access = 3;
+}
+
+message GetUserBalanceResponse {
+  repeated Balance data = 1;
+//  int64 userId = 2; // delete nahui
+}
+
+message Balance {
+  double available = 1;
+  double frozen = 2;
+//  double usdt = 3; // <>
+//  double bonusBalance = 4; // <>
+  double all = 3;
+  string token = 4;
+}

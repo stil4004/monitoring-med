@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package api_m;
+
+option go_package = "./api_m";
+
+// TODO: implement update (taker/maker approve ?)
+
+
+//TODO int64 for all time
+service offer {
+  rpc CreateOffer(CreateOfferRequest) returns (OfferData);
+  rpc DeleteOfferBack(DeleteOfferBRequest) returns (google.protobuf.Empty);
+  rpc DeleteOfferFront(DeleteOfferFRequest) returns (google.protobuf.Empty);
+  rpc GetActiveOffers(GetActiveOffersRequest) returns (GetActiveOffersResponse); // метод для получения стакана
+  rpc GetOffersUser(GetOffersUserRequest) returns (GetOffersUserResponse);
+}
+
+// TODO access
+message GetOffersUserRequest {
+  string type = 1;
+  int64 limit = 2;
+  int64 page = 3;
+
+//  string access = 4; // delete nahui
+}
+
+message GetOffersUserResponse {
+  repeated OfferData data = 1;
+  int64 total = 2;
+  int64 pages = 3;
+}
+
+// TODO access then clientId
+message DeleteOfferFRequest {
+  string internalId = 1;
+//  int64 clientId = 2; // убрать нахуй сменить на access and clientId
+}
+
+// TODO without access
+message DeleteOfferBRequest {
+  string internalId = 1;
+  int64 clientId = 2; // убрать нахуй сменить на access and clientId
+}
+
+// TODO
+message GetActiveOffersRequest {
+  string type = 1; // buy/sell
+  repeated string fiat = 2; // RUB зачем если фиат один только, это РУБ
+  string crypto = 3; // USDTTRC
+  double amount = 4;
+  bool bestRating = 5;
+  bool bestPrice = 6;
+  int64 limit = 7;
+  int64 page = 8;
+  SORT_TYPE sort = 9; // rate_asc, rate_desc, time move to ENUM
+}
+
+
+enum SORT_TYPE {
+  SORT_UNSPECIFIED = 0;
+  SORT_RATE_ASC = 1;
+  SORT_RATE_DESC = 2;
+  SORT_TIME_ASC = 3;
+}
+
+message GetActiveOffersResponse {
+  repeated OfferData data = 1;
+  int64 total = 2;
+  int64 pages = 3;
+}
+
+// TODO access then userId
+message CreateOfferRequest {
+  string type = 1; // buy/sell
+  double exchangePercent = 2;
+  double liquidityCrypto = 3;
+  double liquidityFiat = 4;
+  bool fixed = 5;
+  repeated CreateOfferPayment payments = 6;
+  double exchangeRate = 7;
+  double limitMin = 8;
+  double limitMax = 9;
+  string fiat = 10;
+  string crypto = 11;
+//  double transactionWithdrawAmount = 12; // <>
+//  string countryCode = 13;  // delete nahui
+  string term = 12; // условия сделки
+  int64 ExpireOfferTime = 13;
+  int64 ExpireOrderCreationTime = 14;
+  string ExternalId = 15;
+//  int64 userid = 18;
+//  string access = 18;
+}
+
+message CreateOfferPayment {
+  string tokenFrom = 1;
+  string tokenTo = 2;
+  string extra = 3;
+  string address = 4;
+}
+
+message OfferData {
+  OfferInfo offerInfo = 1;
+  UserInfoOf user = 2;
+  bool offerIsNotCreated = 3;
+}
+
+message OfferInfo {
+  repeated RequisiteOffer payments = 1;
+//  string countryCode = 2; // delete nahui
+  string description = 2; // описание оффера
+  string internalId = 3; // внутренний id оффера
+//  string dExternalId = 5; // <>
+  double liquidityFiat = 4; // сумма в фиате
+  double liquidityCrypto = 5; // сумма в крипте
+  double limitMin = 6; // минимальная сумма
+  double limitMax = 7; // максимальная сумма
+  double exchangeRate = 8; // курс
+  string terms = 9; // + условия сделки
+  string status = 10;  // статус оффера
+//  string cryptoToken = 13; // <>
+  string expireOrderCreationTime = 12; // время жизни оффера
+  bool needMerchant = 13; // ?
+//  string fiatMarket = 16; // <>
+  string fiatTech = 14; // SBERRUB
+//  string cryptoMarket = 18; // <>
+  string cryptoTech = 15; // USDTTRC
+//  uint64 id = 20; // <>
+  string type = 16; // buy/sell
+//  double percent = 22; // <>
+//  int64 originId = 23; // <>
+  bool isFixed = 17; // курс фиксированный
+  bool pro = 18; // проверенный ли трейдер
+  int64 createTime = 19;
+}
+
+message UserInfoOf {
+//  int64 id = 1;  // hide it
+  string nickname = 1;
+  string email = 2; // aa***aa@example.com
+  string avatar = 3;
+//  string bio = 5; // *
+  bool isBLocked = 4;
+  bool isVerified = 5;
+  int64 blockedUntil = 6;
+  int64 lastEntry = 7;
+//  string lastActivity = 10; // <>
+  int64 registrationDate = 8; // delete nahui
+  string language = 9;
+//  bool isDnD = 13; // <>
+//  int64 positiveFeedbacks = 14; // <>
+//  int64 negativeFeedbacks = 15; // <>
+//  double tradesCompletedPercent = 16; // <>
+//  int64 totalTrades = 17; // <>
+  bool merchant = 11;
+  UserDataOf statistics = 12;
+}
+
+message UserDataOf {
+  int64 positiveFeedbacks = 1;
+  int64 negativeFeedbacks = 2;
+  double tradesCompletedPercent = 3;
+  int64 totalTrades = 4;
+}
+
+message RequisiteOffer {
+  string firstName = 1;
+//  int64 tokenId = 2; // <>
+//  int64 cryptoId = 3; // <>
+  string surname = 2;
+  bool isHide = 3;
+  string card = 4;
+  string rId = 5;
+//  int64 id = 8; // <>
+  string tech = 6;
+//  string full = 10; // <>
+//  string market = 11; // <>
+}

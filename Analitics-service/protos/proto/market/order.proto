@@ -1,0 +1,322 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+//protoc -I proto proto/market/*.proto --go_out=./gen/go/ --go_opt=paths=source_relative --go-grpc_out=./gen/go/ --go-grpc_opt=paths=source_relative
+
+package market;
+
+option go_package = "./market";
+
+
+// TODO add update order (activate and MA TA)
+service order {
+  rpc GetOrdersByOffer(GetOrdersByOfferRequest) returns (GetOrdersByOfferResponse);
+  rpc InitOrder(InitOrderRequest) returns (InitOrderResponse);
+  rpc DeclineOrder(DeclineOrderRequest) returns (google.protobuf.Empty); //  POSTHandleDeclineOrder
+  rpc GetOrdersMe(GetOrdersMeRequest) returns (GetOrdersMeResponse);
+  rpc HandleTakerPayed(HandlePayedRequest) returns (HandleTakerPayedResponse);
+  rpc HandleMakerPayed(HandlePayedRequest) returns (HandleMakerPayedResponse);
+}
+
+
+message HandleMakerPayedResponse {
+  HandleMakerApprovedInfo data = 1;
+}
+
+message HandleMakerApprovedInfo {
+  TakerInfo takerInfo = 1;
+  Order orderInfo = 2;
+  bool success = 3;
+}
+
+message HandlePayedRequest {
+  string internalOrderId = 1;
+  string access = 2;
+}
+
+message HandleTakerPayedResponse {
+  HandleTackerApprovedInfo data = 1;
+}
+
+message HandleTackerApprovedInfo {
+  TakerInfo takerInfo = 1;
+  Order orderInfo = 2;
+}
+
+message TakerInfo {
+  string internalId = 1;
+  string card = 2;
+  string bank = 3;
+  string fio = 4;
+  double amount = 5;
+}
+
+message Order {
+  google.protobuf.Timestamp takerApprovedUpdateTime = 1;
+  google.protobuf.Timestamp makerApprovedUpdateTime = 2;
+  string internalId = 3;
+  bool takerApproved = 4;
+  bool makerApproved = 5;
+//  int64 offerId = 6; // <>
+  string requisiteId = 6;
+  double amountFiat = 7;
+  double amountCrypto = 8;
+  google.protobuf.Timestamp createTime = 9;
+//  int64 conflictId = 11; // <>
+//  int64 fiatId = 12; // <>
+//  int64 cryptoId = 13; // <>
+  double makerPaid = 10;
+  double takerPaid = 11;
+  int64 checkId = 12;
+//  int64 takerId = 17; // <>
+//  int64 makerId = 18; // <>
+//  int64 id = 19; // <>
+  google.protobuf.Timestamp receiptTime = 13;
+  string chatId = 14;
+  string status = 15;
+  string makerNickname = 16;
+  string takerNickname = 17;
+  double rate = 18;
+  string type = 19;
+  string receipt = 20;
+  bool makerCanApprove = 21;
+}
+
+message GetOrdersMeRequest {
+  google.protobuf.Timestamp dateFrom = 1;
+  string currency = 2;
+  google.protobuf.Timestamp dateTo = 3;
+  string status = 4;
+  int64 limit = 5;
+  string role = 6;
+  string type = 7;
+  int64 page = 8;
+  string archive = 9;
+  string searchFields = 10;
+  int64 clientId = 11;
+  string access = 12;
+
+}
+
+message GetOrdersMeResponse {
+  ResponseGetOrdersMeModel data = 1;
+}
+
+message ResponseGetOrdersMeModel {
+  int64 total = 1;
+  int64 pages = 2;
+  repeated CoreOrder data = 3;
+}
+
+message CoreOrder { // <>
+  google.protobuf.Timestamp makerApprovedTime = 1;
+  google.protobuf.Timestamp takerApprovedTime = 2;
+  google.protobuf.Timestamp makerConfirmTime = 3;
+  bool makerApproved = 4;
+  bool takerApproved = 5;
+  google.protobuf.Timestamp completeTime = 6;
+  bool isConfirmed = 7;
+  double makerAmount = 8;
+  double takerAmount = 9;
+  string internalId = 10;
+//  string externalId = 11; // <>
+  google.protobuf.Timestamp createTime = 11;
+  google.protobuf.Timestamp updateTime = 12;
+  google.protobuf.Timestamp deleteTime = 13;
+//  string paymentId = 15; // <>
+//  string appealId = 16; // <>
+//  int64 statusId = 17; // <>
+//  int64 cryptoId = 18; // <>
+//  uint64 offerId = 19; // <>
+//  int64 makerId = 20; // <>
+//  int64 takerId = 21; // <>
+//  int64 fiatId = 22; // <>
+  double benefit = 14;
+  string chatId = 15;
+  double rate = 16;
+//  int64 id = 26; // <>
+  string fiat = 17;
+  string crypto = 18;
+  string internalOfferId = 19;
+  string makerNickname = 20;
+  string takerNickname = 21;
+  string type = 22;
+//  uint32 typeId = 33; // <>
+  string status = 23;
+  Payment payment = 24;
+  string receipt = 25;
+  string role = 26;
+}
+
+message Payment {
+  google.protobuf.Timestamp createTime = 1;
+  google.protobuf.Timestamp updateTime = 2;
+  string internalId = 3;
+//  string externalId = 4; // <>
+//  int64 detailId = 5; // <>
+//  int64 statusId = 6; // <>
+//  int64 cryptoId = 7; // <>
+//  int64 offerId = 8; // <>
+//  int64 fiatId = 9; // <>
+  int64 id = 4;
+  string tokenFrom = 5;
+  string tokenTo = 6;
+  PaymentDetail detail = 7;
+}
+
+message PaymentDetail {
+  string firstName = 1;
+  string lastName = 2;
+//  int64 clientId = 3; // <>
+//  int64 tokenId = 4; // <>
+  string address = 5;
+//  int64 id = 6; // <>
+}
+
+message DeclineOrderRequest {
+  string internalId = 1;
+  repeated uint32 reasonId = 2;
+  string access = 3;
+}
+
+message ResponseOrderModelWithChat {
+  repeated OrderRequisite requisite = 1;
+  GetOrder order = 2;
+  UserChat user = 3;
+}
+
+message GetOrder {
+  string takerApprovedUpdateTime = 1;
+  string makerApprovedUpdateTime = 2;
+  string internalId = 3;
+  bool takerApproved = 4;
+  bool makerApproved = 5;
+//  int64 offerId = 6; // <>
+  double amountFrom = 6;
+  google.protobuf.Timestamp createTime = 7;
+  google.protobuf.Timestamp expireOffer = 8;
+  double exchangeRate = 9;
+  double amountTo = 10;
+  string tokenTo = 11;
+  string tokenFrom = 12;
+  string status = 13;
+  string chatId = 14;
+  repeated RequisiteOrder payments = 15;
+  string description = 16;
+  bool makerCanApprove = 17;
+}
+
+message RequisiteOrder {
+  string firstName = 1;
+  string surname = 2;
+  string internalId = 3;
+  string wallet = 4;
+  string token = 5;
+}
+
+message OrderRequisite {
+  string wallet = 1;
+  string token = 2;
+  double amount = 3;
+  string internalId = 4;
+  string fio = 5;
+//  int64 orderId = 6; // <>
+//  int64 offerId = 7; // <>
+//  int64 id = 8; // <>
+}
+
+message UserChat {
+  string registrationDate = 1;
+  string blockedUntil = 2;
+  bool isBlocked = 3;
+  string lastEntry = 4;
+  string nickname = 5;
+  string language = 6;
+  UserDataOr statistics = 7;
+  string avatar = 8;
+  int64 id = 9;
+  string email = 10;
+//  bool isDnD = 11; // <>
+  string role = 11;
+  string bio = 12;
+}
+
+
+message UserDataOr {
+  int64 positiveFeedbacks = 1;
+  int64 negativeFeedbacks = 2;
+  double tradesCompletedPercent = 3;
+  int64 totalTrades = 4;
+}
+
+message GetOrdersByOfferRequest {
+  string executorAmount = 1;
+  string paymentDetails = 2;
+  string creatorAmount = 3;
+  string internalId = 4;
+  string tokenFrom = 5;
+  string tokenTo = 6;
+  string status = 7;
+  string offset = 8;
+  string limit = 9;
+}
+
+message GetOrdersByOfferResponse {
+  repeated ResponseOrderModel data = 1;
+}
+
+message ResponseOrderModel {
+  GetOrder order = 1;
+  UserOrder user = 2;
+}
+
+message UserOrder {
+  int64 feedbackPositive = 1;
+  int64 feedbackNegative = 2;
+  double tradesCompleted = 3;
+  bool isVerified = 4;
+  bool isBlocked = 5;
+  string nickname = 6;
+  string avatar = 7;
+  bool online = 8;
+//  bool dndKey = 9;
+}
+
+
+message InitOrderRequest {
+  string internalOfferId = 1;
+  string address = 2;
+  string paymentId = 3;
+  string takerNickname = 4;
+  string makerNickname = 5;
+  int64 takerId = 6;
+  int64 makerId = 7;
+  string crypto = 8;
+  string fiat = 9;
+  double amountFrom = 10;
+  double amountTo = 11;
+  string access = 12;
+  double fixAmount = 13;
+  double twa = 14;
+}
+
+message InitOrderResponse {
+  string internalId = 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

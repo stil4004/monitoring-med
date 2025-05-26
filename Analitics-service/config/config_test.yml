@@ -1,0 +1,45 @@
+# Servers
+GRPCServer:
+  Host: "0.0.0.0"
+  Port: "50001"
+
+Server:
+  AppVersion: "1.0.0"
+  Host: "0.0.0.0"
+  Port: "12046"
+  Timeout: 60s
+
+Deploy:
+  IsTest: true
+
+InnerConnection:
+  ReloadTime: 10s
+
+# Repository
+Postgres:
+  host: "gAAAAABmS1COQ_lSf8kvQ3V8eA7IR10NGceTuUQ4J3kKebgpZj2AhPNH8HwT9tAf6q173ItWv30Knlz4FpzLsVVyIGopp2fYkQ=="
+  port: "gAAAAABmS1Cd7JsD4OEim-SHzj62kXdeXX0zYl6NdAYo4j4zq2K4gC5n3-_2ZfQqaUHeAWJf6YfgVdX1_npQvbN54vBohGmOuw=="
+  user: "gAAAAABmS1CrlA5DDh5TDwUSL37DnE123nbBvjs6gYaKMSk8z-KrPtTjs8EXSZQLTk9NqKWd0H__5Q4mwHfycnTJXmHeI5lZig=="
+  password: "gAAAAABmS1C1Fff14t2P9VeT_OjuC10KBBo2JdRQ9H-NDBVb9vOO6IwhRPVUbrw_6ASjZgfvdwc2LQ4T_-UPQkHjqKsbazki6KAH79rTGUwquHv2hTqjnoSGJlGrxTqa4kVcspsWt-snyvqRQsWZfYWwiALy68a1MMy0iFLunYjvQEplYaxEwS4="
+  DBName: "gAAAAABmS1PmWZVoVs6ONEmRKWLvFcBny7MwZKIHUiE5TjzgJwK4yjn7Ru5xQD-0C27q2QekxTXHEu5CiYe76105uzY0o5x87Q=="
+  sslMode: "disable"
+  pgDriver: "pgx"
+  # table: "market_api.public.stat_request"
+
+# ClickHouse:
+#   host: "0.0.0.0"
+# #  port: "18123"
+#   port: "19000"
+#   database: "default"
+#   username: "default"
+#   password: "qwerty123"
+#   table: "test_table"
+#   debug: true
+#   dialTimeout: 1s
+#   maxOpenConns: 10
+#   maxIdleConns: 5
+#   connMaxLifetime: 1h
+
+# # TODO use more seconds
+# Manager:
+#   flushInterval: 5s

@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package market;
+
+option go_package = "./market";
+
+service token {
+  rpc GetTokens(GetTokensRequest) returns (GetTokensResponse);
+  rpc CheckLimits(CheckLimitsRequest) returns (CheckLimitsResponse);
+  rpc GetPrice(GetPriceRequest) returns (GetPriceResponse);
+}
+
+message GetPriceRequest {
+  double percent = 1;
+  bool fixed = 2;
+  string right = 3;
+  string left = 4;
+  string type = 5;
+}
+
+message GetPriceResponse {
+  double limitMin = 1;
+  double limitMax = 2;
+  double price = 3;
+}
+
+message CheckLimitsRequest {
+  double amount = 1;
+  bool fixed = 2;
+  string right = 3;
+  string left = 4;
+}
+
+message CheckLimitsResponse {
+  bool response = 1;
+}
+
+message GetTokensRequest {
+  bool isCrypto = 1;
+  bool isFiat = 2;
+  bool all = 3;
+}
+
+message GetTokensResponse {
+  repeated Token tokens = 1;
+}
+
+message Token {
+  string tech = 1;
+//  string market = 2; // <>
+//  string full = 3; // <>
+  bool isCrypto = 2;
+  bool isActive = 3;
+}

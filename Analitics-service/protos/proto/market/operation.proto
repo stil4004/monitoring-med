@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+
+package market;
+
+option go_package = "./market";
+
+service operation {
+  rpc WithdrawCrypto(WithdrawCryptoRequest) returns (WithdrawCryptoResponse);
+  rpc GetUserBalance(GetUserBalanceRequest) returns (GetUserBalanceResponse);
+}
+
+message WithdrawCryptoRequest {
+  string destTag = 1;
+  string callbackId = 2;
+  string internalId = 3;
+  string totpToken = 4;
+  string receiver = 5;
+  double amount = 6;
+  string token = 7;
+  string code = 8;
+  int64 userId = 9;
+  string access = 10;
+}
+
+message WithdrawCryptoResponse {
+  string trackerId = 1;
+}
+
+message GetUserBalanceRequest {
+  bool onCreate = 1;
+  string token = 2;
+  string access = 3;
+}
+
+message GetUserBalanceResponse {
+  repeated Balance data = 1;
+  int64 userId = 2;
+}
+
+message Balance {
+  double available = 1;
+  double frozen = 2;
+//  double usdt = 3; // <>
+//  double bonusBalance = 4; // <>
+  double all = 3;
+  string token = 4;
+}

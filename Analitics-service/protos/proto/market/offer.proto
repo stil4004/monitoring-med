@@ -1,0 +1,162 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+package market;
+
+option go_package = "./market";
+
+// TODO: implement update (taker/maker approve ?)
+
+service offer {
+  rpc CreateOffer(CreateOfferRequest) returns (OfferData);
+  rpc DeleteOffer(DeleteOfferRequest) returns (google.protobuf.Empty);
+  rpc GetActiveOffers(GetActiveOffersRequest) returns (GetActiveOffersResponse);
+  rpc GetOffersUser(GetOffersUserRequest) returns (GetOffersUserResponse);
+}
+
+
+message GetOffersUserRequest {
+  string type = 1;
+  int64 limit = 2;
+  int64 page = 3;
+
+  string access = 4;
+}
+
+message GetOffersUserResponse {
+  repeated OfferData data = 1;
+  int64 total = 2;
+  int64 pages = 3;
+}
+
+message DeleteOfferRequest {
+  string internalId = 1;
+  int64 clientId = 2;
+}
+
+message GetActiveOffersRequest {
+  string type = 1;
+  repeated string fiat = 2;
+  string crypto = 3;
+  double amount = 4;
+  bool bestRating = 5;
+  bool bestPrice = 6;
+  int64 limit = 7;
+  int64 page = 8;
+  string sort = 9;
+}
+
+message GetActiveOffersResponse {
+  repeated OfferData data = 1;
+  int64 total = 2;
+  int64 pages = 3;
+}
+
+message CreateOfferRequest {
+  string type = 1;
+  double exchangePercent = 2;
+  double liquidityCrypto = 3;
+  double liquidityFiat = 4;
+  bool fixed = 5;
+  repeated CreateOfferPayment payments = 6;
+  double exchangeRate = 7;
+  double limitMin = 8;
+  double limitMax = 9;
+  string fiat = 10;
+  string crypto = 11;
+  double transactionWithdrawAmount = 12; // <>
+  string countryCode = 13;
+  string term = 14;
+  google.protobuf.Timestamp ExpireOfferTime = 15;
+  google.protobuf.Timestamp ExpireOrderCreationTime = 16;
+  string ExternalId = 17;
+//  int64 userid = 18;
+  string access = 18;
+}
+
+message CreateOfferPayment {
+  string tokenFrom = 1;
+  string tokenTo = 2;
+  string extra = 3;
+  string address = 4;
+}
+
+message OfferData {
+  OfferInfo offerInfo = 1;
+  UserOffer user = 2;
+  bool offerIsNotCreated = 3;
+}
+
+message OfferInfo {
+  repeated RequisiteOffer payments = 1;
+  string countryCode = 2;
+  string description = 3;
+  string internalId = 4;
+//  string dExternalId = 5; // <>
+  double liquidityFiat = 5;
+  double liquidityCrypto = 6;
+  double limitMin = 7;
+  double limitMax = 8;
+  double exchangeRate = 9;
+  string therms = 10;
+  string status = 11;
+//  string cryptoToken = 13; // <>
+  string expireOrderCreationTime = 12;
+  bool needMerchant = 13;
+//  string fiatMarket = 16; // <>
+  string fiatTech = 14;
+//  string cryptoMarket = 18; // <>
+  string cryptoTech = 15;
+//  uint64 id = 20; // <>
+  string type = 16;
+//  double percent = 22; // <>
+//  int64 originId = 23; // <>
+  bool isFixed = 17;
+  bool pro = 18;
+  google.protobuf.Timestamp createTime = 19;
+}
+
+message UserOffer {
+  int64 id = 1;
+  string nickname = 2;
+  string email = 3; // aa***aa@example.com
+  string avatar = 4;
+//  string bio = 5; // *
+  bool isBLocked = 5;
+  bool isVerified = 6;
+  string blockedUntil = 7;
+  string lastEntry = 8;
+//  string lastActivity = 10; // <>
+  string registrationDate = 9;
+  string language = 10;
+//  bool isDnD = 13; // <>
+//  int64 positiveFeedbacks = 14; // <>
+//  int64 negativeFeedbacks = 15; // <>
+//  double tradesCompletedPercent = 16; // <>
+//  int64 totalTrades = 17; // <>
+  bool merchant = 11;
+  UserDataOf statistics = 12;
+}
+
+message UserDataOf {
+  int64 positiveFeedbacks = 1;
+  int64 negativeFeedbacks = 2;
+  double tradesCompletedPercent = 3;
+  int64 totalTrades = 4;
+}
+
+message RequisiteOffer {
+  string firstName = 1;
+//  int64 tokenId = 2; // <>
+//  int64 cryptoId = 3; // <>
+  string surname = 2;
+  bool isHide = 3;
+  string card = 4;
+  string rId = 5;
+//  int64 id = 8; // <>
+  string tech = 6;
+//  string full = 10; // <>
+//  string market = 11; // <>
+}

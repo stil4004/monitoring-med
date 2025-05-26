@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package market;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "./market";
+
+service user {
+  rpc AddComment(AddCommentRequest) returns (google.protobuf.Empty); // empty
+  rpc SignUp(SignUpRequest) returns (SignUpResponse);
+  rpc SignIn(SignInRequest) returns (SignInResponse);
+  rpc SignOut(LogoutRequest) returns (google.protobuf.Empty); // empty
+}
+
+message AddCommentRequest {
+  int64 clientId = 1;
+  int64 reviewerId = 2;
+  bool rate = 3;
+  string internalId = 4;
+  google.protobuf.Timestamp createdTime = 5;
+  string text = 6;
+}
+
+message SignUpRequest {
+  string language = 1;
+  string email = 2;
+  string nickname = 3;
+  string phone = 4;
+  string ua = 5;
+  string password = 6;
+  string referralHash = 7;
+  string referralId = 8; // unused field
+}
+
+message SignUpResponse {
+  ResponseClientModel data = 1;
+}
+
+message ResponseClientModel {
+  string refreshToken = 1;
+  string accessToken = 2;
+}
+
+message SignInRequest {
+  string email = 1;
+  string ua = 2;
+  string nickname = 3;
+  string password = 4;
+  string ip = 5;
+}
+
+message SignInResponse {
+  ResponseClientModel data = 1;
+}
+
+message LogoutRequest {
+  int64 clientId = 1;
+  string ua = 2;
+}
+

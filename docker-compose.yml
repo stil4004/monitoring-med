@@ -23,7 +23,7 @@ services:
       - '--collector.diskstats'
       - '--collector.netdev'
       - '--collector.filesystem'
-      - '--collector.uname'
+      - '--collector.uname'   
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -41,6 +41,7 @@ services:
       - "3000:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
+      - ./grafana-provisioning:/etc/grafana/provisioning
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     depends_on:

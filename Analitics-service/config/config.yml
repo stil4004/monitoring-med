@@ -1,0 +1,29 @@
+# Servers
+GRPCServer:
+  Host: "0.0.0.0"
+  Port: "50001"
+
+Server:
+  AppVersion: "1.0.0"
+  Host: "0.0.0.0"
+  Port: "12045"
+  Timeout: 60s
+
+Deploy:
+  IsTest: true
+
+InnerConnection:
+  ReloadTime: 10s
+
+VictoriaMetrics:
+    baseURL: "http://localhost:8428"
+
+# Repository
+# Postgres:
+#   host: "gAAAAABmWJ3wARRpNvxPirz_d_uES6whPgocySnvtvMzwrJFv9DZwP1i4izPtD6A9YkZFQznOknA-dePuzHd9LzwIl-3H43KA48libVqH3qOn8jyDZgWQhHC-xLJerhX_mBGD0CkNU-R5WpWo388fS55zM74veQRew=="
+#   port: "gAAAAABmV7_dJYGEfqf_q7EleZHc_1isqdwSut7EFRWaubn2wes_9ngnZwYB67ftlfJHXG-TS83f6LKZYB--h9grxm_-n99mkg=="
+#   user: "gAAAAABmWHaEu1SrjYShkgiBPULFs8uPo8qnKFXhhB4ndCssJkSv0-6egsSiIlYSs2mbXHJFY7VxJmABWNL2Co4udAiLgmRTfw=="
+#   password: "gAAAAABmWHcwgZbZnSWH_UQ-wjferX_CBa_7bH5bzQiH7VMlyBWFV7af1yiaUcGPwJAwjK0iye4bdAX7JNxLxf3dlyMvZx-diVCmESm7rbyr2BfqIxMJ22k="
+#   DBName: "gAAAAABmV8ArvGo_COiRn_LxRMNoj9LeSKxpKn2jatA1IQdr7dE7WS0TQJGKnhjkN0p8LtAnc31tfZrYkn-PDCBm9--QJKIKcg=="
+#   sslMode: "require"
+#   pgDriver: "pgx"
