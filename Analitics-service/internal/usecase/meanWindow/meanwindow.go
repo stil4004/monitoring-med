@@ -82,6 +82,7 @@ func (u *meanWindowUsecase) checkMetrics(ctx context.Context) {
 }
 
 func (u *meanWindowUsecase) AddMetricToMonitoring(ctx context.Context, metricName string) error {
+
 	exists, err := u.statsChecker.CheckMetricExists(ctx, metricName)
 	if err != nil {
 		return fmt.Errorf("failed to check metric: %w", err)

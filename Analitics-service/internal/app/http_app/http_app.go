@@ -36,14 +36,6 @@ func NewHttpApp(isTest bool) *fx.App {
 				return ctx_log.ContextWithLogger(ctx, logger), cancel
 			},
 
-			// Set shield
-			// func() *secure.Shield {
-			// 	if isTest {
-			// 		return secure.NewShield(os.Getenv("AE_TEST"))
-			// 	}
-			// 	return secure.NewShield(os.Getenv("AE_KEY"))
-			// },
-
 			// Config
 			func() (*config.Config, error) {
 				var (
@@ -72,11 +64,6 @@ func NewHttpApp(isTest bool) *fx.App {
 				}
 				return client, nil
 			},
-
-			// Init DB
-			// storage.NewDB,
-
-			// clients here
 
 			// Repositories
 			stats_repo.New,
@@ -139,6 +126,7 @@ func NewHttpApp(isTest bool) *fx.App {
 								zap.String("host", cfg.Server.Host),
 								zap.String("port", cfg.Server.Port),
 							)
+							log.Info("Start analyse service")
 							if err := app.Listen(fmt.Sprintf("%s:%s", cfg.Server.Host, cfg.Server.Port)); err != nil {
 								log.Error("server can't listen", zap.String("error: ", err.Error()))
 							}
@@ -183,10 +171,9 @@ func SetupLogger() (*zap.Logger, error) {
 		OutputPaths:       []string{"stderr"},
 		ErrorOutputPaths:  []string{"stderr"},
 		DisableStacktrace: true,
-		//InitialFields:     map[string]interface{}{"app": "controller_trx"},
 	}
 
-	logger, err := config.Build(zap.WithCaller(false)) // 1 кадр в глубину стека - этого вполне достаточно
+	logger, err := config.Build(zap.WithCaller(false))
 	if err != nil {
 		return nil, err
 	}

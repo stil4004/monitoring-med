@@ -6,7 +6,7 @@ GRPCServer:
 Server:
   AppVersion: "1.0.0"
   Host: "0.0.0.0"
-  Port: "12045"
+  Port: "8080"
   Timeout: 60s
 
 Deploy:
